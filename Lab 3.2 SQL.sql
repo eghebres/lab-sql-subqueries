@@ -10,13 +10,12 @@ WHERE f.title='Hunchback Impossible';
 -- 2
 -- List all films whose length is longer than the average of all the films.
 
-SELECT title, length FROM film
-WHERE length > (
-  SELECT AVG(length)
-  FROM film
-)
-ORDER BY length DESC;
+SELECT AVG(length) FROM film;
 
+SELECT title, film_id, length FROM film
+WHERE length > (
+		SELECT AVG(length)
+		FROM film);
 
 -- 3
 -- Use subqueries to display all actors who appear in the film Alone Trip.
@@ -52,10 +51,29 @@ select concat(c.first_name,' ',c.last_name) as 'Name', c.email as 'E-mail'
 -- 6 
 -- Which are films starred by the most prolific actor? Most prolific actor is defined as the actor that has acted in the most number of films. 
 
+SELECT act.first_name, act.last_name FROM actor act
+JOIN film_actor film_act USING (actor_id)
+GROUP BY act.actor_id, act.first_name, act.last_name
+LIMIT 1;
+
 
 -- 7
 -- Films rented by most profitable customer. You can use the customer table and payment table to find the most profitable customer ie the customer that has made the largest sum of payments
 
 
+
+
 -- 8
 -- Customers who spent more than the average payments.
+
+SELECT * FROM customer;
+SELECT * FROM payment;
+
+SELECT CONCAT(first_name, " " , last_name) AS NAME 
+    FROM customer
+    WHERE customer_id IN (
+        SELECT customer_id
+        FROM payment
+        GROUP BY customer_id
+        ORDER BY AVG(amount) DESC);
+        
